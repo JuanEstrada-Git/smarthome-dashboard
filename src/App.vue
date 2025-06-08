@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <!-- Only ONE header (the blue one with sticky, awesome style) -->
+    <!-- Sticky header with theme switch -->
     <header class="main-header">
       <h1>Smart Home Dashboard</h1>
       <button class="theme-switch" @click="toggleTheme">
@@ -8,7 +8,6 @@
         <span v-else>🌙</span>
       </button>
     </header>
-    <!-- Your Dashboard (everything else) -->
     <SmartDashboard />
   </div>
 </template>
@@ -18,13 +17,9 @@ import SmartDashboard from './components/Dashboard.vue'
 
 export default {
   name: 'App',
-  components: {
-    SmartDashboard
-  },
+  components: { SmartDashboard },
   data() {
-    return {
-      darkMode: true
-    }
+    return { darkMode: true }
   },
   methods: {
     toggleTheme() {
@@ -35,16 +30,14 @@ export default {
   },
   mounted() {
     const stored = localStorage.getItem('darkMode')
-    if (stored !== null) {
-      this.darkMode = stored === 'true'
-    }
+    if (stored !== null) this.darkMode = stored === 'true'
     document.body.className = this.darkMode ? 'theme-dark' : 'theme-light'
   }
 }
 </script>
 
 <style>
-/* Styles for sticky header and theme toggle */
+/* --- Sticky header and theme switcher --- */
 .main-header {
   position: sticky;
   top: 0;
@@ -80,6 +73,7 @@ export default {
   outline: none;
 }
 .theme-switch:hover { box-shadow: 0 2px 18px #00338822; }
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -89,6 +83,7 @@ export default {
   margin: 0;
 }
 
+/* --- THEME VARIABLES --- */
 :root {
   --color-bg-card: #35404f;
   --color-bg-card-alt: #23252b;
@@ -97,7 +92,7 @@ export default {
   --color-text-muted: #b8c4d7;
   --color-status-ok: #00ff87;
   --color-status-warn: #ff6464;
-  --color-status-info: #ffe572;
+  --color-status-info: #ffe572;   /* Pale yellow for dark mode */
   --color-dot-off: #b8c4d7;
   --color-shadow-glow: #ffe57244;
   --color-shadow-blue: #abc9ff22;
@@ -112,8 +107,9 @@ body.theme-light {
   --color-text-heading: #23252b;
   --color-text-muted: #7885a1;
   --color-status-ok: #21b481;
-  --color-status-warn: #d23434;
-  --color-status-info: #e4b700;
+  /* Improved: more legible, darker, more contrast! */
+  --color-status-warn: #b40019;   /* Deep red */
+  --color-status-info: #a17a00;   /* Gold/amber, not pale */
   --color-dot-off: #a2acc9;
   --color-shadow-glow: #ffe57218;
   --color-shadow-blue: #abc9ff18;
@@ -121,13 +117,24 @@ body.theme-light {
   --color-button-hover: #ffd13e;
 }
 
+/* Body background for themes */
 body.theme-dark { background: #181a20; color: #eee; }
 body.theme-light { background: #f8f9fc; color: #181a20; }
 
-/* Cards, etc */
+/* --- Cards, etc --- */
 body.theme-dark .card, body.theme-dark .smart-home-card { background: #35404f; color: #eee; }
 body.theme-light .card, body.theme-light .smart-home-card {
   background: #fff; color: #222;
   box-shadow: 0 8px 44px #abc9ff22, 0 0 0 4px #7bb6ff30, 0 0 18px 6px #7bb6ff44;
 }
+
+/* --- ENHANCED CONTRAST FOR DEVICE BATTERY VALUES --- */
+.devices span[style] {
+  /* This catches inline color styles from SmartHomeCard for % values */
+  font-weight: bold;
+  /* High contrast shadow for white background: */
+  text-shadow: 0 1px 6px #fff, 0 1px 3px #8886, 0 0px 1px #0005;
+  letter-spacing: 0.01em;
+}
+
 </style>

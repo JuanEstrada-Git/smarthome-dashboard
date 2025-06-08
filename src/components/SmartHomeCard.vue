@@ -9,7 +9,12 @@
       </div>
     </div>
     <div class="modes">
-      <button v-for="mode in modes" :key="mode" :class="{ active: mode === currentMode }" @click="setMode(mode)">
+      <button
+        v-for="mode in modes"
+        :key="mode"
+        :class="{ active: mode === currentMode }"
+        @click="setMode(mode)"
+      >
         {{ mode }}
       </button>
     </div>
@@ -17,7 +22,10 @@
       <div v-for="dev in devices" :key="dev.id" class="device">
         <span :class="['dot', dev.online ? 'on' : 'off']"></span>
         {{ dev.name }} –
-        <span :style="{ color: dev.battery < 20 ? 'var(--color-status-warn)' : 'var(--color-status-info)' }">
+        <span
+          class="device-battery"
+          :data-warn="dev.battery < 20"
+        >
           {{ dev.battery }}%
         </span>
         <button v-if="!dev.online" @click="rebootDevice(dev.id)">Reboot</button>
@@ -66,7 +74,11 @@ export default {
       this.devices = this.devices.map(d =>
         d.id === id ? { ...d, online: true } : d
       );
-      this.lastEvents.unshift({ icon: '🔄', text: `Rebooted device ${id}`, time: new Date().toLocaleTimeString() });
+      this.lastEvents.unshift({
+        icon: '🔄',
+        text: `Rebooted device ${id}`,
+        time: new Date().toLocaleTimeString(),
+      });
     },
   },
 };
@@ -158,4 +170,35 @@ export default {
 .events { margin: 0.82rem 0 0 0; }
 .event { font-size: 0.99rem; margin-top: 0.44rem; opacity: 0.87; }
 .event-icon { margin-right: 7px; }
+
+/* HIGH-CONTRAST BATTERY PERCENTAGE FOR LIGHT MODE */
+body.theme-light .smart-home-card .device-battery {
+  font-weight: 700;
+  color: #a17a00 !important; /* Gold for info */
+  text-shadow:
+    0 0 2px #fff,
+    0 1px 8px #ffd13e,
+    0 0.5px 1px #444;
+}
+body.theme-light .smart-home-card .device-battery[data-warn="true"] {
+  color: #b40019 !important; /* Deep red for warning */
+  text-shadow:
+    0 0 2px #fff,
+    0 1px 8px #ff6868,
+    0 0.5px 1px #333;
+}
+/* SOFTER BATTERY CONTRAST FOR DARK MODE */
+body.theme-dark .smart-home-card .device-battery {
+  font-weight: 700;
+  color: #ffe572 !important;
+  text-shadow:
+    0 0 2px #23252b,
+    0 1px 4px #0005;
+}
+body.theme-dark .smart-home-card .device-battery[data-warn="true"] {
+  color: #ff6464 !important;
+  text-shadow:
+    0 0 2px #23252b,
+    0 1px 4px #0005;
+}
 </style>
